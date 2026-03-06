@@ -15,6 +15,7 @@ qt_add_executable(Exercise_1
     ModelPart.h
     ModelPartList.cpp
     ModelPartList.h
+    icons.qrc
 )
 
 target_link_libraries(Exercise_1

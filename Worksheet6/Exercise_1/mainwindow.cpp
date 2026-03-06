@@ -1,14 +1,26 @@
 #include "mainwindow.h"
-#include <QMessageBox>
-#include <QStatusBar>
-#include <QPushButton>
 #include "ui_mainwindow.h"
+
+#include <QFileDialog>
+#include <QPushButton>
+#include <QStatusBar>
+#include <QTreeView>
+#include <QModelIndex>
+#include <QIcon>
+#include <QSize>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , partList(nullptr)
 {
     ui->setupUi(this);
+
+    ui->actionOpen_File->setIcon(QIcon(":/Icons/fileopen.png"));
+    ui->toolBar->clear();
+    ui->toolBar->setIconSize(QSize(24, 24));
+    ui->toolBar->addAction(ui->actionOpen_File);
+    ui->toolBar->show();
 
     connect(ui->pushButton, &QPushButton::released,
             this, &MainWindow::handleButton);
@@ -19,27 +31,24 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::statusUpdateMessage,
             ui->statusbar, &QStatusBar::showMessage);
 
-    // Create / allocate the model list
-    this->partList = new ModelPartList("Parts List");
+    connect(ui->treeView, &QTreeView::clicked,
+            this, &MainWindow::handleTreeClicked);
 
-    // Link it to the tree view in the GUI
-    ui->treeView->setModel(this->partList);
+    partList = new ModelPartList("Parts List");
+    ui->treeView->setModel(partList);
 
-    // Get root item
-    ModelPart *rootItem = this->partList->getRootItem();
+    ModelPart *rootItem = partList->getRootItem();
 
-    // Add 3 top level items
     for (int i = 0; i < 3; i++) {
         QString name = QString("TopLevel %1").arg(i);
-        QString visible("true");
+        QString visible = "true";
 
         ModelPart *childItem = new ModelPart({name, visible});
         rootItem->appendChild(childItem);
 
-        // Add 5 sub-items
         for (int j = 0; j < 5; j++) {
             QString childName = QString("Item %1,%2").arg(i).arg(j);
-            QString childVisible("true");
+            QString childVisible = "true";
 
             ModelPart *childChildItem = new ModelPart({childName, childVisible});
             childItem->appendChild(childChildItem);
@@ -55,6 +64,38 @@ void MainWindow::handleButton()
 void MainWindow::handleButton2()
 {
     emit statusUpdateMessage("Button 2 clicked", 0);
+}
+
+void MainWindow::on_actionOpen_File_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(
+        this,
+        tr("Open File"),
+        "C:\\",
+        tr("STL Files (*.stl);;Text Files (*.txt)")
+        );
+
+    if (!fileName.isEmpty()) {
+        emit statusUpdateMessage(QString("Selected file: ") + fileName, 0);
+    }
+}
+
+void MainWindow::handleTreeClicked()
+{
+    QModelIndex index = ui->treeView->currentIndex();
+
+    if (!index.isValid()) {
+        return;
+    }
+
+    ModelPart *selectedPart = static_cast<ModelPart*>(index.internalPointer());
+
+    if (!selectedPart) {
+        return;
+    }
+
+    QString text = selectedPart->data(0).toString();
+    emit statusUpdateMessage(QString("The selected item is: ") + text, 0);
 }
 
 MainWindow::~MainWindow()
