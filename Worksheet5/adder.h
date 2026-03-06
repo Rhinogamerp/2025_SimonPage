@@ -1,15 +1,19 @@
 /** @file
- * Declarations for exported functions in the maths library.
+ * Declarations for exported functions in the maths library whether its static or dynamic.
+ * Uses 2 integer Variables: A and B
+ * returns the sum of the two integers
  */
 
 // Prevent multiple inclusion of this header (include guard)
 #ifndef MATHSLIBADDERH
-#define MATHSLIBADDERH
+	#define MATHSLIBADDERH
 
-// Define MATHSLIBAPI to handle DLL import/export on Windows.
-// - mathsEXPORTS: building the DLL (export symbols)
-// - otherwise: using the DLL (import symbols)
-// - mathsSTATIC: building/using a static library
+/** 
+*Define MATHSLIBAPI to handle DLL import/export on Windows.
+* - mathsEXPORTS: building the DLL (export symbols)
+* - otherwise: using the DLL (import symbols)
+* - mathsSTATIC: building/using a static library
+*/
 #if defined(WIN32) || defined(_WIN32)
     #ifdef mathsSTATIC
         #define MATHSLIBAPI
