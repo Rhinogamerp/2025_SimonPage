@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include <QMessageBox>
+#include <QStatusBar>
+#include <QPushButton>
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -7,20 +9,25 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    connect(ui->pushButton, &QPushButton::released,
+            this, &MainWindow::handleButton);
+
+    connect(ui->pushButton_2, &QPushButton::released,
+            this, &MainWindow::handleButton2);
+
+    connect(this, &MainWindow::statusUpdateMessage,
+            ui->statusbar, &QStatusBar::showMessage);
 }
 
-void MainWindow::handleButton1()
+void MainWindow::handleButton()
 {
-    QMessageBox msgBox;
-    msgBox.setText("Button 1 clicked");
-    msgBox.exec();
+    emit statusUpdateMessage("Button 1 clicked", 0);
 }
 
 void MainWindow::handleButton2()
 {
-    QMessageBox msgBox;
-    msgBox.setText("Button 2 clicked");
-    msgBox.exec();
+    emit statusUpdateMessage("Button 2 clicked", 0);
 }
 
 MainWindow::~MainWindow()
