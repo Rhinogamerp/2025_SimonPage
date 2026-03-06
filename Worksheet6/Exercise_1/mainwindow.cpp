@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include "optiondialog.h"
 #include <QFileDialog>
 #include <QPushButton>
 #include <QStatusBar>
@@ -63,7 +63,13 @@ void MainWindow::handleButton()
 
 void MainWindow::handleButton2()
 {
-    emit statusUpdateMessage("Button 2 clicked", 0);
+    OptionDialog dialog(this);
+
+    if (dialog.exec() == QDialog::Accepted) {
+        emit statusUpdateMessage("Dialog accepted", 0);
+    } else {
+        emit statusUpdateMessage("Dialog rejected", 0);
+    }
 }
 
 void MainWindow::on_actionOpen_File_triggered()

@@ -16,6 +16,7 @@ qt_add_executable(Exercise_1
     ModelPartList.cpp
     ModelPartList.h
     icons.qrc
+    optiondialog.h optiondialog.cpp optiondialog.ui
 )
 
 target_link_libraries(Exercise_1
