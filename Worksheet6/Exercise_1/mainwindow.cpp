@@ -18,6 +18,33 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(this, &MainWindow::statusUpdateMessage,
             ui->statusbar, &QStatusBar::showMessage);
+
+    // Create / allocate the model list
+    this->partList = new ModelPartList("Parts List");
+
+    // Link it to the tree view in the GUI
+    ui->treeView->setModel(this->partList);
+
+    // Get root item
+    ModelPart *rootItem = this->partList->getRootItem();
+
+    // Add 3 top level items
+    for (int i = 0; i < 3; i++) {
+        QString name = QString("TopLevel %1").arg(i);
+        QString visible("true");
+
+        ModelPart *childItem = new ModelPart({name, visible});
+        rootItem->appendChild(childItem);
+
+        // Add 5 sub-items
+        for (int j = 0; j < 5; j++) {
+            QString childName = QString("Item %1,%2").arg(i).arg(j);
+            QString childVisible("true");
+
+            ModelPart *childChildItem = new ModelPart({childName, childVisible});
+            childItem->appendChild(childChildItem);
+        }
+    }
 }
 
 void MainWindow::handleButton()

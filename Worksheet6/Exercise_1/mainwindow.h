@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QString>
+#include "ModelPart.h"
+#include "ModelPartList.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -27,6 +29,7 @@ signals:
 
 private:
     Ui::MainWindow *ui;
+    ModelPartList* partList;
 };
 
 #endif // MAINWINDOW_H
